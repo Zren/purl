@@ -295,8 +295,6 @@
             generate: function() {
                 if (isUndefined(jQuery))
                     return;
-                console.log(jQuery);
-                console.log(jQuery.param);
                 var buffer = this.data.attr.protocol + '://' + this.data.attr.host;
                 buffer += this.data.attr.path;
 
