@@ -196,7 +196,7 @@ You can use param method to modify parameters values.
 Example :
 
 ``` javascript
-/*---- jQuery version -----*/
+/*---- Query String Parameters -----*/
 var url = $.url('http://www.example.com?item1=12');
 url.param('item2', 42);
 url.generate(); // return "http://www.example.com?item1=12&item2=42"
@@ -212,21 +212,22 @@ url.param({
 });
 url.generate(); // return "http://www.example.com?item5=13&item6=foobar"
 
-/*---- plain JS version -----*/
-var url = purl('http://www.example.com?item1=12');
-url.param('item2', 42);
-url.generate(); // return "http://www.example.com?item1=12&item2=42"
+
+/*---- Fragment Parameters -----*/
+var url = $.url('http://www.example.com#item1=12');
+url.fparam('item2', 42);
+url.generate(); // return "http://www.example.com#item1=12&item2=42"
 
 
-url.param('item1', 20);
-url.removeParam('item2');
-url.generate(); // return "http://www.example.com?item1=20"
+url.fparam('item1', 20);
+url.removeFParam('item2');
+url.generate(); // return "http://www.example.com#item1=20"
 
-url.param({
+url.fparam({
     'item5': 13,
     'item6': "foobar"
 });
-url.generate(); // return "http://www.example.com?item5=13&item6=foobar"
+url.generate(); // return "http://www.example.com#item5=13&item6=foobar"
 ```
 
 Older versions and compatability

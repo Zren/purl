@@ -192,6 +192,10 @@
         return typeof o === 'undefined';
     }
 
+    function isPlainObject(o) {
+        return Object(o) === o && Object.getPrototypeOf(o) === Object.prototype;
+    }
+
     function keys(obj) {
         var key_array = [];
         for ( var prop in obj ) {
@@ -218,26 +222,52 @@
                 return !isUndefined(attr) ? this.data.attr[attr] : this.data.attr;
             },
 
-            // return query string parameters
+            // get or set query string parameters
             param : function( param, value ) {
                 if (arguments.length >= 2 && !isUndefined(param) && !isUndefined(value) ) {
                     // Setter
                     return this.data.param.query[param] = value;
+                } else if (arguments.length == 1 && !isUndefined(param)) {
+                    if (isPlainObject(param)) {
+                        // Setter (Dictionary) 
+                        this.data.param.query = param;
+                    } else {
+                        // Getter
+                        return this.data.param.query[param];
+                    }
                 } else {
-                    // Getter
-                    return !isUndefined(param) ? this.data.param.query[param] : this.data.param.query;
+                    // Getter (All query string parameters)
+                    return this.data.param.query;
                 }
             },
 
-            // return fragment parameters
+            // remove query string parameters
+            removeParam : function( param ) {
+                delete this.data.param.query[param];
+            },
+
+            // get or set fragment parameters
             fparam : function( param, value ) {
                 if (arguments.length >= 2 && !isUndefined(param) && !isUndefined(value) ) {
                     // Setter
                     return this.data.param.fragment[param] = value;
+                } else if (arguments.length == 1 && !isUndefined(param)) {
+                    if (isPlainObject(param)) {
+                        // Setter (Dictionary) 
+                        this.data.param.fragment = param;
+                    } else {
+                        // Getter
+                        return this.data.param.fragment[param];
+                    }
                 } else {
-                    // Getter
-                    return !isUndefined(param) ? this.data.param.fragment[param] : this.data.param.fragment;
+                    // Getter (All fragment parameters)
+                    return this.data.param.fragment;
                 }
+            },
+
+            // remove fragment parameters
+            removeFParam : function( param ) {
+                delete this.data.param.fragment[param];
             },
 
             // return path segments
