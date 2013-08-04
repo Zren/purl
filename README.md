@@ -187,6 +187,48 @@ If there is a chance you may end up parsing a badly encoded URL you should proba
 
 Thanks to [steve78b](https://github.com/steve78b) for pointing this out.
 
+Generate URL
+------------
+
+With *generate* method you can generate the url from url object.
+You can use param method to modify parameters values.
+
+Example :
+
+``` javascript
+/*---- jQuery version -----*/
+var url = $.url('http://www.example.com?item1=12');
+url.param('item2', 42);
+url.generate(); // return "http://www.example.com?item1=12&item2=42"
+
+
+url.param('item1', 20);
+url.removeParam('item2');
+url.generate(); // return "http://www.example.com?item1=20"
+
+url.param({
+    'item5': 13,
+    'item6': "foobar"
+});
+url.generate(); // return "http://www.example.com?item5=13&item6=foobar"
+
+/*---- plain JS version -----*/
+var url = purl('http://www.example.com?item1=12');
+url.param('item2', 42);
+url.generate(); // return "http://www.example.com?item1=12&item2=42"
+
+
+url.param('item1', 20);
+url.removeParam('item2');
+url.generate(); // return "http://www.example.com?item1=20"
+
+url.param({
+    'item5': 13,
+    'item6': "foobar"
+});
+url.generate(); // return "http://www.example.com?item5=13&item6=foobar"
+```
+
 Older versions and compatability
 ---------------------------------
 

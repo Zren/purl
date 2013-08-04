@@ -60,7 +60,7 @@
 
     function getAttrName( elm ) {
         var tn = elm.tagName;
-        if ( typeof tn !== 'undefined' ) return tag2attr[tn.toLowerCase()];
+        if ( !isUndefined(tn) ) return tag2attr[tn.toLowerCase()];
         return tn;
     }
 
@@ -148,7 +148,7 @@
 
     function set(obj, key, val) {
         var v = obj[key];
-        if (typeof v === 'undefined') {
+        if (isUndefined(v)) {
             obj[key] = val;
         } else if (isArray(v)) {
             v.push(val);
@@ -184,6 +184,14 @@
         return Object.prototype.toString.call(vArg) === "[object Array]";
     }
 
+    function isPlainObject(o) {
+        return Object(o) === o && Object.getPrototypeOf(o) === Object.prototype;
+    }
+
+    function isUndefined(o) {
+        return typeof o === 'undefined';
+    }
+
     function keys(obj) {
         var key_array = [];
         for ( var prop in obj ) {
@@ -207,22 +215,34 @@
             // get various attributes from the URI
             attr : function( attr ) {
                 attr = aliases[attr] || attr;
-                return typeof attr !== 'undefined' ? this.data.attr[attr] : this.data.attr;
+                return !isUndefined(attr) ? this.data.attr[attr] : this.data.attr;
             },
 
             // return query string parameters
-            param : function( param ) {
-                return typeof param !== 'undefined' ? this.data.param.query[param] : this.data.param.query;
+            param : function( param, value ) {
+                if (arguments.length >= 2 && !isUndefined(param) && !isUndefined(value) ) {
+                    // Setter
+                    return this.data.param.query[param] = value;
+                } else {
+                    // Getter
+                    return !isUndefined(param) ? this.data.param.query[param] : this.data.param.query;
+                }
             },
 
             // return fragment parameters
-            fparam : function( param ) {
-                return typeof param !== 'undefined' ? this.data.param.fragment[param] : this.data.param.fragment;
+            fparam : function( param, value ) {
+                if (arguments.length >= 2 && !isUndefined(param) && !isUndefined(value) ) {
+                    // Setter
+                    return this.data.param.fragment[param] = value;
+                } else {
+                    // Getter
+                    return !isUndefined(param) ? this.data.param.fragment[param] : this.data.param.fragment;
+                }
             },
 
             // return path segments
             segment : function( seg ) {
-                if ( typeof seg === 'undefined' ) {
+                if ( isUndefined(seg) ) {
                     return this.data.seg.path;
                 } else {
                     seg = seg < 0 ? this.data.seg.path.length + seg : seg - 1; // negative segments count from the end
@@ -232,12 +252,31 @@
 
             // return fragment segments
             fsegment : function( seg ) {
-                if ( typeof seg === 'undefined' ) {
+                if ( isUndefined(seg) ) {
                     return this.data.seg.fragment;
                 } else {
                     seg = seg < 0 ? this.data.seg.fragment.length + seg : seg - 1; // negative segments count from the end
                     return this.data.seg.fragment[seg];
                 }
+            },
+
+            // Return generated url from object data
+            // @requires purl.jQuery.param
+            generate: function() {
+                if (isUndefined(jQuery))
+                    return;
+                console.log(jQuery);
+                console.log(jQuery.param);
+                var buffer = this.data.attr.protocol + '://' + this.data.attr.host;
+                buffer += this.data.attr.path;
+
+                if (Object.keys(this.data.param.query).length > 0)
+                    buffer += '?' + jQuery.param(this.data.param.query);
+                
+                if (Object.keys(this.data.param.fragment).length > 0)
+                    buffer += '#' + jQuery.param(this.data.param.fragment);
+
+                return buffer;
             }
 
         };
